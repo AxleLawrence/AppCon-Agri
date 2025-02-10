@@ -1,0 +1,70 @@
+
+/* Navbar Links */
+.nav-link {
+    @apply relative text-gray-700 font-semibold hover:text-gray-900 transition duration-300;
+}
+
+.nav-link::after {
+    content: "";
+    @apply absolute left-0 bottom-0 w-0 h-[3px] bg-green-500 transition-all duration-300;
+}
+
+.nav-link:hover::after, 
+.nav-link.active::after {
+    @apply w-full;
+}
+
+.nav-link.active {
+    @apply text-gray-900;
+}
+
+/* Mobile Dropdown Links */
+.mobile-nav-link {
+    @apply relative block py-2 text-gray-700 font-medium hover:text-gray-900 transition duration-300;
+}
+
+.mobile-nav-link::after {
+    content: "";
+    @apply absolute left-0 bottom-0 w-0 h-[2px] bg-green-500 transition-all duration-300;
+}
+
+.mobile-nav-link:hover::after, 
+.mobile-nav-link.active::after {
+    @apply w-full;
+}
+
+.mobile-nav-link.active {
+    @apply text-gray-900;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+/* Floating Plant Animation */
+@keyframes floatPlant {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+.animate-plant-float {
+    animation: floatPlant 3s ease-in-out infinite;
+}
+
+/* Floating Effect for Leaves */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
