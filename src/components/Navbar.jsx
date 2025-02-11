@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import ProfileDropdown from "./ProfileDropdown"; // Import your ProfileDropdown
+
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,8 +21,7 @@ const Navbar = () => {
           <li><NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Contact</NavLink></li>
         </ul>
 
-        {/* Profile Dropdown Component */}
-        <ProfileDropdown />
+       
 
         {/* Mobile Menu Button */}
         <button onClick={() => setMenuOpen(!menuOpen)} className="text-black text-3xl md:hidden">
