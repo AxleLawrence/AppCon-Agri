@@ -9,7 +9,7 @@ import TaskCalendar from "../components/TaskCalendar";
 import ProfileDropdown from "../components/ProfileDropdown"; // ✅ Import ProfileDropdown
 
 const Dashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // For mobile toggle
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for toggling sidebar
 
   return (
     <motion.div
@@ -25,7 +25,7 @@ const Dashboard = () => {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className={`fixed inset-y-0 left-0 z-50 transition-transform transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`} // Sidebar behavior for mobile
+        } md:translate-x-0`} // Sidebar will slide in/out on mobile
       >
         <Sidebar />
       </motion.div>
@@ -33,15 +33,23 @@ const Dashboard = () => {
       {/* Main Content */}
       <div
         className={`flex-1 p-4 sm:p-6 transition-all ${
-          isSidebarOpen ? "ml-48" : "ml-16" // Adjust left margin on mobile
+          isSidebarOpen ? "ml-48" : "ml-16" // Adjust left margin based on sidebar state
         }`}
       >
+        {/* Mobile Menu Toggle Button */}
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="absolute top-4 left-4 text-white md:hidden z-50"
+        >
+          <FiSearch size={28} />
+        </button>
+
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <h1 className="text-2xl sm:text-3xl font-bold">Your Agricultural Assistant</h1>
           <div className="flex items-center gap-3 mt-4 sm:mt-0">
-            {/* Search Box */}
-            <div className="relative w-full sm:w-56">
+            {/* Search Box (Hidden on Mobile) */}
+            <div className="relative w-full sm:w-56 hidden md:block">
               <input
                 type="text"
                 placeholder="Search..."
@@ -90,14 +98,6 @@ const Dashboard = () => {
           <TaskCalendar />
         </div>
       </div>
-
-      {/* Mobile Sidebar Toggle */}
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="absolute top-4 left-4 text-white md:hidden z-50"
-      >
-        <FiSearch size={28} />
-      </button>
     </motion.div>
   );
 };
