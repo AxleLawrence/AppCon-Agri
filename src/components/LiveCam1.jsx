@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const FieldMap = () => {
+const LiveCamera = () => {
   const [devices, setDevices] = useState([]); // List of available cameras
   const [selectedDevice, setSelectedDevice] = useState(""); // Chosen camera
   const [isCameraOn, setIsCameraOn] = useState(false); // Camera on/off state
@@ -45,49 +45,53 @@ const FieldMap = () => {
   // Stop the camera stream
   const stopCamera = () => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
     if (videoRef.current) videoRef.current.srcObject = null;
   };
 
   return (
-    <div className="bg-gray-100 p-4 rounded-xl shadow-md w-full">
-      {/* Camera Selection */}
-      <label className="block text-gray-700 text-sm font-bold mb-2">Select Camera:</label>
-      <select
-        value={selectedDevice}
-        onChange={(e) => setSelectedDevice(e.target.value)}
-        className="w-full p-2 border rounded-md mb-4"
-        disabled={!isCameraOn} // Disable when camera is off
-      >
-        {devices.map((device) => (
-          <option key={device.deviceId} value={device.deviceId}>
-            {device.label || `Camera ${devices.indexOf(device) + 1}`}
-          </option>
-        ))}
-      </select>
+    <div className="bg-gray-50 mt-2 p-4 rounded-xl shadow-md w-full flex flex-col md:flex-row items-center md:items-start gap-4">
+      {/* Left Section: Camera Selection and Buttons */}
+      <div className="w-full md:w-1/3 flex flex-col space-y-4">
+        <div>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Select Camera:</label>
+          <select
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+            className="w-full p-2 border rounded-md"
+            disabled={!isCameraOn} // Disable when camera is off
+          >
+            {devices.map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>
+                {device.label || `Camera ${devices.indexOf(device) + 1}`}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Live Camera Feed (Increased Height) */}
-      <div className="relative w-full h-96 bg-black rounded-md flex items-center justify-center">
+        {/* Toggle Camera Button */}
+        <button
+          onClick={() => setIsCameraOn((prev) => !prev)}
+          className={`px-6 py-2 rounded-lg shadow-md text-white font-semibold transition-all ${
+            isCameraOn ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+          }`}
+        >
+          {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+        </button>
+      </div>
+
+      {/* Right Section: Live Camera Feed (Increased Height) */}
+      <div className="w-full md:w-2/3 h-80 bg-black rounded-md flex items-center justify-center">
         {isCameraOn ? (
           <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover rounded-md" />
         ) : (
           <p className="text-white">Camera Off</p>
         )}
       </div>
-
-      {/* Toggle Camera Button */}
-      <button
-        onClick={() => setIsCameraOn((prev) => !prev)}
-        className={`mt-4 px-6 py-2 rounded-lg shadow-md text-white font-semibold transition-all ${
-          isCameraOn ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
-        }`}
-      >
-        {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-      </button>
     </div>
   );
 };
 
-export default FieldMap;
+export default LiveCamera;
