@@ -9,6 +9,8 @@ import TaskCalendar from "../components/TaskCalendar";
 import ProfileDropdown from "../components/ProfileDropdown"; // ✅ Import ProfileDropdown
 
 const Dashboard = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // For mobile toggle
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -21,18 +23,25 @@ const Dashboard = () => {
         initial={{ x: -100 }}
         animate={{ x: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
+        className={`fixed inset-y-0 left-0 z-50 transition-transform transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`} // Sidebar behavior for mobile
       >
         <Sidebar />
       </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 ml-16 md:ml-20">
+      <div
+        className={`flex-1 p-4 sm:p-6 transition-all ${
+          isSidebarOpen ? "ml-48" : "ml-16" // Adjust left margin on mobile
+        }`}
+      >
         {/* Header Section */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Your Agricultural Assistant</h1>
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row justify-between items-center">
+          <h1 className="text-2xl sm:text-3xl font-bold">Your Agricultural Assistant</h1>
+          <div className="flex items-center gap-3 mt-4 sm:mt-0">
             {/* Search Box */}
-            <div className="relative w-56">
+            <div className="relative w-full sm:w-56">
               <input
                 type="text"
                 placeholder="Search..."
@@ -47,7 +56,7 @@ const Dashboard = () => {
         </div>
 
         {/* Weather and Soil Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
           <WeatherCard title="Air Temp" value="24°C" color="blue" />
           <WeatherCard title="Soil Moisture" value="72%" color="green" />
           <WeatherCard title="Precipitation" value="-2mm" color="yellow" />
@@ -81,6 +90,14 @@ const Dashboard = () => {
           <TaskCalendar />
         </div>
       </div>
+
+      {/* Mobile Sidebar Toggle */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="absolute top-4 left-4 text-white md:hidden z-50"
+      >
+        <FiSearch size={28} />
+      </button>
     </motion.div>
   );
 };
