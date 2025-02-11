@@ -59,6 +59,12 @@ const TaskCalendar = () => {
     <div className="bg-white p-4 rounded-xl shadow-md mt-4 w-full">
       <h2 className="text-lg font-semibold mb-2">📅 Task & Schedule Manager</h2>
 
+      {/* Instruction Box */}
+      <div className="mb-4 p-3 bg-blue-100 border border-blue-300 text-blue-700 rounded-lg text-sm">
+        👉 <strong>Desktop:</strong> Click on a date to add a task. <br />
+        👉 <strong>Mobile:</strong> <strong>Hold</strong> a date to add a task.
+      </div>
+
       {/* Calendar wrapped in a responsive container */}
       <div className="overflow-auto">
         <Calendar

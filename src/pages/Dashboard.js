@@ -41,7 +41,7 @@ const Dashboard = () => {
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="absolute top-4 left-4 text-white md:hidden z-50"
         >
-          <FiSearch size={28} />
+          
         </button>
 
         {/* Header Section */}
