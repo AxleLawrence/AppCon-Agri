@@ -41,7 +41,6 @@ const LiveCamera = () => {
         alert("Error accessing the camera. Please check permissions.");
       }
     };
-    
 
     startCamera();
 
@@ -91,7 +90,13 @@ const LiveCamera = () => {
       {/* Right Section: Live Camera Feed (Increased Height) */}
       <div className="w-full md:w-2/3 h-80 bg-black rounded-md flex items-center justify-center">
         {isCameraOn ? (
-          <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover rounded-md" />
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover rounded-md"
+          />
         ) : (
           <p className="text-white">Camera Off</p>
         )}
