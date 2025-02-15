@@ -1,19 +1,28 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const mysql = require("mysql");
+
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 
 const app = express();
-
-// Enable CORS
-app.use(cors());
-
-// Enable Express to parse JSON
 app.use(express.json());
-
+app.use(cors());
+app.use(cookieParser());
 // API routes
 app.get("/api", (req, res) => {
     res.json({ message: "This is the API response" });
 });
+
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "signup",
+})
+
 
 // Serve React app in production
 if (process.env.NODE_ENV === "production") {

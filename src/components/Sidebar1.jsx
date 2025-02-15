@@ -17,7 +17,7 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed md:static mt-3 ml-1 top-0 left-2 h-[92vh] w-64 p-6 
+        className={`fixed md:static mt-3 ml-1 top-0 left-2 h-[80vh] w-64 p-6 
         bg-[#222831] shadow-xl rounded-2xl transition-all duration-300 ease-in-out 
         flex flex-col justify-start z-40 ${
           sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
