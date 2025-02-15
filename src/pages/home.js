@@ -1,32 +1,37 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import facebookIcon from "../assets/icons/facebook2.svg";
-import emailIcon from "../assets/icons/email2.svg";
-import linkedinIcon from "../assets/icons/linkedin1.svg";
-import leafIcon from "../assets/icons/leaf.png";
-import plantIcon from "../assets/icons/plant.png";
+import { Link } from "react-router-dom";
+
+// Loading Screen Component
+const LoadingPage = () => {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center">
+        <div className="animate-spin rounded-full border-t-4 border-green-500 border-solid h-12 w-12 mx-auto"></div>
+        <p className="mt-4 text-gray-600 text-lg">Loading, please wait...</p>
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation(); // Get current route
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Highlight active link based on current route
-    const links = document.querySelectorAll(".nav-link, .mobile-nav-link");
-    links.forEach(link => {
-      if (link.getAttribute("href") === location.pathname) {
-        link.classList.add("active");
-      } else {
-        link.classList.remove("active");
-      }
-    });
-  }, [location]);
+    // Simulate loading delay (or replace with actual data fetch)
+    const timeout = setTimeout(() => setLoading(false), 1500); // 1.5 seconds
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
       {/* Main Content */}
       <main className="flex-grow">
-        <section className="bg-white shadow-lg rounded-xl max-w-[78rem] w-full mx-auto p-8 md:p-20 flex flex-col md:flex-row items-center justify-between mt-2 md:mt-10 relative overflow-hidden animate-fade-in">
+        <section className="bg-white shadow-md rounded-xl max-w-[78rem] w-full mx-auto p-6 md:p-16 flex flex-col md:flex-row items-center justify-between mt-4 md:mt-10 relative overflow-hidden">
           
           {/* Left Content */}
           <div className="md:w-1/2 text-center md:text-left">
@@ -40,19 +45,28 @@ const Home = () => {
               Track plant health with real-time analytics, optimize watering schedules, and enhance growth with smart AI-based monitoring.
             </p>
             <Link to="/dashboard">
-              <button className="mt-4 md:mt-6 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <button className="mt-4 md:mt-6 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-transform duration-200 hover:shadow-sm hover:scale-105 active:scale-100">
                 Go to Dashboard
               </button>
             </Link>
           </div>
 
-          {/* Right Image */}
+          {/* Right Image (Optimized) */}
           <div className="md:w-1/2 mt-6 md:mt-0 flex justify-center">
-            <img 
-              src={plantIcon} 
-              alt="Plant" 
-              className="max-w-xs md:max-w-md transform transition-all duration-700 animate-plant-float w-full sm:w-3/4 md:w-auto" 
-            />
+            <picture>
+              <source srcSet="/images/plant-small.webp" media="(max-width: 640px)" />
+              <source srcSet="/images/plant-medium.webp" media="(max-width: 1024px)" />
+              <img 
+                src="/images/plant-large.webp" 
+                alt="Plant" 
+                loading="lazy" 
+                fetchpriority="high" 
+                width="600" 
+                height="400" 
+                decoding="async"
+                className="max-w-full h-auto"
+              />
+            </picture>
           </div>
         </section>
       </main>
