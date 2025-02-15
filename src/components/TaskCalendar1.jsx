@@ -17,14 +17,6 @@ export default function TaskCalendarLayout() {
     setSelectedDate(info.dateStr);
     setModalOpen(true);
   };
-  const [selectedCrop, setSelectedCrop] = useState("Wheat"); // Default selected crop
-const [cropTasks, setCropTasks] = useState({});
-const crops = {
-  Wheat: ["Watering", "Fertilizing", "Pest Control", "Harvesting"],
-  Corn: ["Watering", "Weeding", "Fertilizing", "Harvesting"],
-  Rice: ["Irrigation", "Weeding", "Fertilizing", "Harvesting"],
-};
-
 
   const handleAddTask = () => {
     if (taskTitle.trim() !== "") {
@@ -41,15 +33,7 @@ const crops = {
       setModalOpen(false);
     }
   };
-  const toggleCropTask = (task) => {
-    setCropTasks((prev) => ({
-      ...prev,
-      [selectedCrop]: {
-        ...prev[selectedCrop],
-        [task]: !prev[selectedCrop]?.[task],
-      },
-    }));
-  };
+ 
   
 
   const handleEventClick = (info) => {
@@ -110,38 +94,6 @@ const crops = {
               selectable
               className="w-full"
             />
-          </div>
-          {/* Crop Growth Reminders */}
-          <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-3">Crop Growth Stages</h2>
-            <select
-              className="w-full p-2 border rounded-md mb-3"
-              value={selectedCrop}
-              onChange={(e) => setSelectedCrop(e.target.value)}
-            >
-              {Object.keys(crops).map((crop) => (
-                <option key={crop} value={crop}>
-                  {crop}
-                </option>
-              ))}
-            </select>
-
-            {/* Crop Task Reminders */}
-            <div className="space-y-2">
-              {crops[selectedCrop].map((reminder) => (
-                <div key={reminder} className="flex justify-between">
-                  <span>{reminder}</span>
-                  <button
-                    onClick={() => toggleCropTask(reminder)}
-                    className={`px-3 py-1 rounded-md text-white ${
-                      cropTasks[selectedCrop]?.[reminder] ? "bg-green-600" : "bg-gray-400"
-                    }`}
-                  >
-                    {cropTasks[selectedCrop]?.[reminder] ? "Done" : "Pending"}
-                  </button>
-                </div>
-              ))}
-            </div>
           </div>
         </main>
       </div>
