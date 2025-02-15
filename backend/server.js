@@ -4,7 +4,6 @@ const path = require("path");
 const mysql = require("mysql");
 
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 
 const app = express();
