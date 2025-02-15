@@ -4,6 +4,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Home from "./pages/home";
+import NotFound from "./pages/NotFound"
 import Database1 from "./pages/Dashboard-Test"
 import TaskCalendar from "./components/TaskCalendar1";
 // Example page
@@ -27,7 +28,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="dashboard" element={<Database1 />} />
         <Route path="/calendar" element={<TaskCalendar />} />
-        
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

@@ -13,13 +13,13 @@ const Footer = () => {
 
         {/* Social Icons */}
         <div className="flex space-x-3 mt-3 md:mt-0">
-          <a href="#" className="hover:opacity-80 transition">
+          <a href="/" className="hover:opacity-80 transition">
             <img src={facebookIcon} alt="Facebook" className="w-4 h-4" />
           </a>
-          <a href="#" className="hover:opacity-80 transition">
+          <a href="/" className="hover:opacity-80 transition">
             <img src={emailIcon} alt="Email" className="w-4 h-4" />
           </a>
-          <a href="#" className="hover:opacity-80 transition">
+          <a href="/" className="hover:opacity-80 transition">
             <img src={linkedinIcon} alt="LinkedIn" className="w-4 h-4" />
           </a>
         </div>
