@@ -14,14 +14,20 @@ const LoadingPage = () => {
 };
 
 const Home = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    return sessionStorage.getItem("homeLoaded") ? false : true;
+  });
 
   useEffect(() => {
-    // Simulate loading delay (or replace with actual data fetch)
-    const timeout = setTimeout(() => setLoading(false), 1500); // 1.5 seconds
+    if (loading) {
+      const timeout = setTimeout(() => {
+        setLoading(false);
+        sessionStorage.setItem("homeLoaded", "true"); // Store load state
+      }, 1500);
 
-    return () => clearTimeout(timeout);
-  }, []);
+      return () => clearTimeout(timeout);
+    }
+  }, [loading]);
 
   if (loading) {
     return <LoadingPage />;
