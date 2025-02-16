@@ -6,10 +6,24 @@ const ProfileDropdown = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove authentication token (if used)
-    navigate("/login"); // Redirect to login page
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/logout", {
+        method: "POST",
+        credentials: "include", // Include cookies in the request
+      });
+  
+      if (response.ok) {
+        localStorage.removeItem("token"); // Remove token from localStorage
+        navigate("/login"); // Redirect to login page
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
+  
 
   return (
     <div className="relative">
