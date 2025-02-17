@@ -26,7 +26,7 @@ async function connectDB() {
       host: "127.0.0.1",
       user: "root",
       password: "",
-      database: "signup",
+      database: "agriDB",
       port: 3306,
     });
 
@@ -108,9 +108,12 @@ app.post("/api/login", async (req, res) => {
 
 // ✅ Logout Route
 app.post("/api/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "Logged out successfully" });
+  res.clearCookie("token"); // ✅ Clear auth cookie
+  return res.json({ message: "Logged out successfully" });
 });
+
+
+
 
 // Serve React app in production
 if (process.env.NODE_ENV === "production") {
