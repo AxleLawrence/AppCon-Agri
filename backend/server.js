@@ -11,6 +11,7 @@ let db;
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -26,7 +27,7 @@ async function connectDB() {
       host: "127.0.0.1",
       user: "root",
       password: "",
-      database: "agriDB",
+      database: "appcondb",
       port: 3306,
     });
 
@@ -42,68 +43,82 @@ connectDB();
 
 // ✅ Signup Route
 app.post("/api/signup", async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { number, fullname, password, otp } = req.body;
 
   if (!db) return res.status(500).json({ error: "Database not connected" });
 
+  if (!/^\d{11}$/.test(number)) {
+    return res.status(400).json({ error: "Invalid mobile number format" });
+  }
+  if (fullname.trim().length < 3 || fullname.trim().length > 100) {
+    return res.status(400).json({ error: "Name must be between 3-100 characters." });
+  }  
+  if (password.length < 6) {
+    return res.status(400).json({ error: "Password must be at least 6 characters long" });
+  }
+  if (!/^\d{6}$/.test(otp)) {
+    return res.status(400).json({ error: "Invalid OTP format" });
+  }
+
   try {
-    const [users] = await db.execute("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
-    if (users.length > 0)
-      return res.status(400).json({ error: "Email already registered" });
+    const [existingUsers] = await db.execute("SELECT * FROM users WHERE number = ?", [number]);
+    if (existingUsers.length > 0)
+      return res.status(400).json({ error: "Mobile number already registered" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.execute(
-      "INSERT INTO users (fullname, email, password) VALUES (?, ?, ?)",
-      [fullname, email, hashedPassword]
+      "INSERT INTO users (number, fullname, password, otp) VALUES (?, ?, ?, ?)",
+      [number, fullname, hashedPassword, otp]
     );
 
-    res.json({ message: "Signup successful" });
+    res.json({ message: "Signup successful!" });
   } catch (error) {
     console.error("❌ Signup error:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
 
+
 // ✅ Login Route
 app.post("/api/login", async (req, res) => {
-    const { email, password } = req.body;
+  console.log("Received login request body:", req.body);
 
-    console.log("Login attempt:", email); // ✅ Debugging
+  const { number, password } = req.body;
 
-    if (!db) {
-        console.error("❌ Database not connected!");
-        return res.status(500).json({ error: "Database not connected" });
+  if (!number || !password) {
+    return res.status(400).json({ error: "Phone number and password are required" });
+  }
+
+  try {
+    const [users] = await db.execute("SELECT * FROM users WHERE number = ?", [number]);
+
+    if (users.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    try {
-        const [users] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
-        console.log("User found in DB:", users);
+      const user = users[0];
+      const isMatch = await bcrypt.compare(password, user.password);
+      console.log("Password match:", isMatch);
 
-        if (users.length === 0) {
-            console.error("❌ User not found");
-            return res.status(401).json({ error: "Invalid email or password" });
-        }
+      if (!isMatch) {
+          console.error("❌ Incorrect password");
+          return res.status(401).json({ error: "Invalid phone number or password" });
+      }
 
-        const user = users[0];
-        const isMatch = await bcrypt.compare(password, user.password);
-        console.log("Password match:", isMatch);
+      const token = jwt.sign(
+          { id: user.id, number: user.number },
+          "your_jwt_secret",
+          { expiresIn: "1h" } // Increased expiry time
+      );
+      res.cookie("token", token, { httpOnly: true });
 
-        if (!isMatch) {
-            console.error("❌ Incorrect password");
-            return res.status(401).json({ error: "Invalid email or password" });
-        }
-
-        const token = jwt.sign({ id: user.id, email: user.email }, "your_jwt_secret", { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true });
-
-        res.json({ message: "Login successful", token });
-    } catch (error) {
-        console.error("❌ Login error:", error);
-        res.status(500).json({ error: "Server error. Try again later." });
-    }
+      res.json({ message: "Login successful", token });
+  } catch (error) {
+      console.error("❌ Login error:", error);
+      res.status(500).json({ error: "Server error. Try again later." });
+  }
 });
+
 
 
 // ✅ Logout Route
