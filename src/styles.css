@@ -68,3 +68,11 @@
 .animate-float {
     animation: float 3s ease-in-out infinite;
 }
+
+
+/* Hide the default password reveal button in Edge and Chrome */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none;
+}

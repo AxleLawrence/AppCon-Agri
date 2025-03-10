@@ -1,105 +1,134 @@
-import { Link } from "react-router-dom";
-import facebookIcon from "../assets/icons/facebook2.svg";
-import googleIcon from "../assets/icons/google.png";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 function Signup() {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    number: "",
+    fullname: "",
+    password: "",
+    otp: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    // ✅ Basic Frontend Validation
+    if (!/^\d{11}$/.test(formData.number)) {
+      return setError("Mobile number must be 11 digits.");
+    }
+    if (formData.fullname.trim().length < 3 || formData.fullname.trim().length > 100) {
+      return setError("Full name must be between 3-100 characters.");
+    }    
+    if (formData.password.length < 6) {
+      return setError("Password must be at least 6 characters long.");
+    }
+    if (!/^\d{6}$/.test(formData.otp)) {
+      return setError("OTP must be 6 digits.");
+    }
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/signup", formData);
+      setSuccess(response.data.message);
+
+      // Redirect to login after successful signup
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (err) {
+      setError(err.response?.data?.error || "Signup failed. Try again.");
+    }
+  };
+
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row">
-    {/* Left Side (Desktop Image) */}
-    <div className="hidden md:flex md:w-1/2">
-      <img
-        src="/images/farm.jpg"
-        alt="Farm"
-        className="w-full h-full object-cover"
-      />
-    </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h1 className="text-2xl font-bold text-center text-green-700">Sign Up</h1>
+        <p className="text-gray-600 text-center mb-4">Monitor your plants efficiently</p>
 
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        {success && <p className="text-green-500 text-center">{success}</p>}
 
-      {/* Right Side (Signup Form) */}
-      <div className="relative flex items-center justify-center w-full md:w-1/2 px-6 md:px-12 py-12">
-        {/* Mobile Background */}
-        <div className="absolute inset-0 md:hidden z-[-1]">
-          <img
-            src="/images/farm.jpg"
-            alt="Farm"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        </div>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-gray-700 font-medium">Mobile Number</label>
+            <input
+              type="tel"
+              name="number"
+              value={formData.number}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+              placeholder="Enter your number"
+              required
+            />
+          </div>
 
-        {/* Signup Card */}
-        <div className="relative bg-white p-6 md:p-10 rounded-xl shadow-lg w-full max-w-md overflow-hidden">
-          <h1 className="text-3xl font-bold text-center text-gray-800">
-            Create an Account
-          </h1>
-          <p className="text-gray-600 text-center mt-2">
-            Join us and start your journey!
-          </p>
+          <div>
+            <label className="block text-gray-700 font-medium">Full Name</label>
+            <input
+              type="text"
+              name="fullname"
+              value={formData.fullname}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
 
-          {/* Signup Form */}
-          <form className="mt-6 space-y-4">
-            <div>
-              <label className="block text-gray-700 font-medium">Full Name</label>
-              <input
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-                placeholder="John Doe"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium">Email</label>
-              <input
-                type="email"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-                placeholder="Email"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium">Password</label>
-              <input
-                type="password"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-                placeholder="Password"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium">Confirm Password</label>
-              <input
-                type="password"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
-                placeholder="Confirm Password"
-              />
-            </div>
-
-            <button className="w-full bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition">
-              Sign Up
-            </button>
-          </form>
-
-          {/* Login Link */}
-          <p className="text-gray-600 text-center mt-4">
-            Already have an account?{" "}
-            <Link to="/login" className="text-green-500 font-semibold hover:underline">
-              Log in here.
-            </Link>
-          </p>
-
-          {/* Social Login Buttons */}
-          <div className="mt-6 flex flex-col gap-3">
-            <button className="flex items-center justify-center w-full border p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-              <img src={facebookIcon} alt="Facebook" className="w-5 h-5 mr-2" />
-              Continue with Facebook
-            </button>
-
-            <button className="flex items-center justify-center w-full border p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-              <img src={googleIcon} alt="Google" className="w-5 h-5 mr-2" />
-              Continue with Google
+          <div className="relative">
+            <label className="block text-gray-700 font-medium">Password</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg pr-10"
+              placeholder="Create a password"
+              required
+            />
+            <button
+              type="button"
+              className="absolute top-[40px] right-5 text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-        </div>
+
+          <div className="relative">
+            <label className="block text-gray-700 font-medium">OTP Verification</label>
+            <input
+              type="text"
+              name="otp"
+              value={formData.otp}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg pr-10"
+              placeholder="Enter OTP sent to your phone"
+              required
+            />         
+          </div>
+
+          <button type="submit" className="w-full bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition">
+            Sign Up
+          </button>
+        </form>
+
+        <p className="text-gray-600 text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-green-500 font-semibold hover:underline">
+            Log in here.
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -6,10 +6,32 @@ const ProfileDropdown = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove authentication token (if used)
-    navigate("/login"); // Redirect to login page
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/logout", {
+        method: "POST",
+        credentials: "include", // Ensure cookies are sent
+      });
+  
+      if (response.ok) {
+        console.log("✅ Logout successful");
+  
+        // 🛑 REMOVE TOKEN FROM STORAGE
+        localStorage.removeItem("token"); // If using localStorage
+        sessionStorage.removeItem("token"); // If using sessionStorage
+  
+        // 🚀 Redirect to HOME after logout
+        window.location.href = "/home"; // Force a page reload to clear session
+      } else {
+        console.error("❌ Logout failed");
+      }
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+    }
   };
+  
+  
+  
 
   return (
     <div className="relative">
